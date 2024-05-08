@@ -13,6 +13,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
+      - run: echo project_id ${{ env.NEON_PROJECT_ID}}
       - uses: actions/checkout@v4
 
       - name: Create Neon Branch
