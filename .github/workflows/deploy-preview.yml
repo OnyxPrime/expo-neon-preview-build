@@ -5,7 +5,7 @@ on: [pull_request]
 
 env:
   NEON_API_KEY: ${{ secrets.NEON_API_KEY }} # You can generate a an API key in your account settings
-  NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }} # You can find this in your project settings
+  NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }} # You can find this in your project settings
 
 
 jobs:
