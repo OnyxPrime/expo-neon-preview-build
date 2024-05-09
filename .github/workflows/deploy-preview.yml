@@ -33,7 +33,7 @@ jobs:
       - run: echo branch_id ${{ steps.create-branch.outputs.branch_id }}
       - run: echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> .env
       - run: echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> .env
-      - run: echo outputs ":" ${{ steps.create-branch.outputs }}
+      - run: echo outputs ":" ${{ join(steps.create-branch.outputs.*, '\n') }}
 
       - name: Clean up neon branch
         id: delete-branch
