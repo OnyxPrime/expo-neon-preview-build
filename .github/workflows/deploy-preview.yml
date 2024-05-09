@@ -46,24 +46,28 @@ jobs:
       - name: 🏗 Setup EXPO CLI
         uses: expo/expo-github-action@v8
         with:
-          expo-version: latest
+          eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🚀 Publish to Expo
-        run: expo publish --release-channel=pr-${{ github.event.number }} --non-interactive
-        
+      - name: 🚀 Create preview
+        uses: expo/expo-github-action/preview@v8
+        with:
+          # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
+          # Use your own, or keep the automatically infered branch name from `--auto`, when using different triggers.
+          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
+
       - name: Comment deployment link
         uses: unsplash/comment-on-pr@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           msg: >
-            You can [preview the PR here](${{ steps.preview.outputs.EXPO_QR_CODE_URL }}).<br><br>
-            <a href="${{ steps.publish.outputs.EXPO_QR_CODE_URL }}"><img src="${{ steps.preview.outputs.EXPO_QR_CODE_URL }}" height="512px" width="512px"></a>
+            You can [preview the PR here](${{ steps.preview.outputs.qr }}).<br><br>
+            <a href="${{ steps.preview.outputs.qr }}"><img src="${{ steps.preview.outputs.qr }}" height="512px" width="512px"></a>
             <br><br>
-            QR code not working or need a different client? Try the QR code or deep link from the [project page](${{steps.preview.outputs.EXPO_PROJECT_URL}}).
+            QR code not working or need a different client? Try the QR code or deep link from the [project page](${{steps.preview.outputs.url}}).
             <br><br>
             ${{ steps.publish.outputs.EXPO_NEW_BUILD_IS_REQUIRED_MESSAGE }}
