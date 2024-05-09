@@ -31,3 +31,13 @@ jobs:
           api_key: ${{ env.NEON_API_KEY }}
       - run: echo project_id ${{ steps.create-branch.outputs.project_id}}
       - run: echo branch_id ${{ steps.create-branch.outputs.branch_id}}
+      - run: echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> .env
+      - run: echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> .env
+      - run: echo outputs ":" ${{ steps.create-branch.outputs }}
+
+      name: Clean up neon branch
+        uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ env.NEON_PROJECT_ID }}
+          branch: ${{ steps.create-branch.outputs.branch_id}}
+          api_key: {{ ${{ env.NEON_API_KEY }} }}
