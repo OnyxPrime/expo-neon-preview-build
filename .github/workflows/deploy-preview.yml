@@ -52,12 +52,9 @@ jobs:
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🚀 Create preview
-        uses: expo/expo-github-action/preview@v8
-        with:
-          # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
-          # Use your own, or keep the automatically infered branch name from `--auto`, when using different triggers.
-          command: expo publish --release-channel=pr-${{ github.event.number }} --non-interactive
+      - name: 🚀 Publish to Expo
+        run: expo publish --release-channel=pr-${{ github.event.number }} --non-interactive
+        
       - name: Comment deployment link
         uses: unsplash/comment-on-pr@master
         env:
