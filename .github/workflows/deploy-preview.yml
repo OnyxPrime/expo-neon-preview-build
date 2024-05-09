@@ -46,7 +46,7 @@ jobs:
       - name: 🏗 Setup EXPO CLI
         uses: expo/expo-github-action@v8
         with:
-          eas-version: latest
+          expo-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: 📦 Install dependencies
@@ -57,7 +57,7 @@ jobs:
         with:
           # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
           # Use your own, or keep the automatically infered branch name from `--auto`, when using different triggers.
-          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
+          command: run: expo publish --release-channel=pr-${{ github.event.number }} --non-interactive
       - name: Comment deployment link
         uses: unsplash/comment-on-pr@master
         env:
