@@ -34,22 +34,30 @@ jobs:
       - run: echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> .env
       - run: echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> .env
       - run: echo outputs ":" ${{ join(steps.create-branch.outputs.*, '\n') }}
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
+
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Set up Expo
-        uses: expo/expo-github-action@v7
+          cache: yarn
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
         with:
-          expo-version: latest
+          eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
-      - name: Install dependencies
+
+      - name: 📦 Install dependencies
         run: yarn install
-      - name: Publish to Expo & create a QR code
-        uses: expo/expo-preview-action@v1
+
+      - name: 🚀 Create preview
+        uses: expo/expo-github-action/preview@v8
         with:
-          channel: pr-${{ github.event.number }}
-        id: preview
+          # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
+          # Use your own, or keep the automatically infered branch name from `--auto`, when using different triggers.
+          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
       - name: Comment deployment link
         uses: unsplash/comment-on-pr@master
         env:
