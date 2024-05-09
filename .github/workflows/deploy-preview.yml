@@ -34,10 +34,10 @@ jobs:
       - run: echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> .env
       - run: echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> .env
       - run: echo outputs ":" ${{ join(steps.create-branch.outputs.*, '\n') }}
-      - name: Set up Node
-        uses: actions/setup-node@v1
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: 18.x
       - name: Set up Expo
         uses: expo/expo-github-action@v7
         with:
