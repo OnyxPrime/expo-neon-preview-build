@@ -35,7 +35,7 @@ jobs:
       - run: echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> .env
       - run: echo outputs ":" ${{ steps.create-branch.outputs }}
 
-      name: Clean up neon branch
+      - name: Clean up neon branch
         uses: neondatabase/delete-branch-action@v3
         with:
           project_id: ${{ env.NEON_PROJECT_ID }}
