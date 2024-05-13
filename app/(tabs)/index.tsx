@@ -1,11 +1,29 @@
 import { Image, StyleSheet, Platform } from 'react-native';
-
+import { neon } from '@neondatabase/serverless';
+import React, { useState, useEffect } from 'react';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    selectName();
+  }, []);
+
+  const conn = neon(process.env.EXPO_PUBLIC_NEON_URL);
+  
+  async function selectName() {
+    try {
+    let results =  await conn`SELECT value FROM neon_app_content WHERE text_field = 'name'`;
+    setData(results[0].value);
+    } catch (err) {
+      setData(err.message);
+    }
+  }
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -16,7 +34,7 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Welcome {data}!!!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>

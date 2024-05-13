@@ -5,7 +5,7 @@ on: [pull_request]
 
 env:
   NEON_API_KEY: ${{ secrets.NEON_API_KEY }} # You can generate a an API key in your account settings
-  NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }} # You can find this in your project settings
+  NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }} # You can find this in your project settings
 
 
 jobs:
@@ -16,14 +16,47 @@ jobs:
       - run: echo project_id ${{ env.NEON_PROJECT_ID}}
       - uses: actions/checkout@v4
 
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v8
+
       - name: Create Neon Branch
         id: create-branch
-        uses: neondatabase/create-branch-action@v4
+        uses: neondatabase/create-branch-action@v5
         with:
           project_id: ${{ env.NEON_PROJECT_ID }}
           # parent: dev # optional (defaults to your primary branch)
-          # branch_name: preview/pr-${{ github.event.number }}-${{ steps.branch-name.outputs.current_branch }}
+          branch_name: preview/pr-${{ github.event.number }}-${{ steps.branch-name.outputs.current_branch }}
           # username: ${{ env.NEON_DATABASE_USERNAME }}
+          database: dg_db # database to branch
           api_key: ${{ env.NEON_API_KEY }}
-      - run: echo project_id ${{ steps.create-branch.outputs.project_id}}
-      - run: echo branch_id ${{ steps.create-branch.outputs.branch_id}}
+      - run: echo project_id ${{ steps.create-branch.outputs.project_id }}
+      - run: echo branch_id ${{ steps.create-branch.outputs.branch_id }}
+      - run: echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> .env
+      - run: echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> .env
+      - run: echo "EXPO_PUBLIC_NEON_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require" >> $GITHUB_ENV
+      - run: echo ${{ env.EXPO_PUBLIC_NEON_URL }}
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - name: 🏗 Setup EXPO CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🚀 Create preview
+        uses: expo/expo-github-action/preview@v8
+        with:
+          # `github.event.pull_request.head.ref` is only available on `pull_request` triggers.
+          # Use your own, or keep the automatically infered branch name from `--auto`, when using different triggers.
+          command: eas update --auto --branch ${{ github.event.pull_request.head.ref }}
