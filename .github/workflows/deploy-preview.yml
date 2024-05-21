@@ -1,5 +1,5 @@
 name: Deploy Preview
-run-name: Create a Neon Branch 🚀
+run-name: Create a preview build 🚀
 
 on: [pull_request]
 
@@ -33,6 +33,9 @@ jobs:
           database: dg_db # database to branch
           api_key: ${{ env.NEON_API_KEY }}
 
+
+      - run: echo "EXPO_PUBLIC_NEON_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require" >> $GITHUB_ENV
+      
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
