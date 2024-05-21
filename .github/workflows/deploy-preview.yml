@@ -29,7 +29,7 @@ jobs:
           project_id: ${{ env.NEON_PROJECT_ID }}
           # parent: dev # optional (defaults to your primary branch)
           branch_name: preview/pr-${{ github.event.number }}-${{ steps.branch-name.outputs.current_branch }}
-          # username: ${{ env.NEON_DATABASE_USERNAME }}
+          username: ${{ env.NEON_USERNAME }}
           database: dg_db # database to branch
           api_key: ${{ env.NEON_API_KEY }}
 
