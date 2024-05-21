@@ -1,13 +1,13 @@
 name: Deploy Preview
-run-name: Create a Neon Branch 🚀
+run-name: Create a preview build 🚀
 
 on: [pull_request]
 
 env:
-  NEON_API_KEY: ${{ secrets.NEON_API_KEY }} # You can generate a an API key in your account settings
+  NEON_API_KEY: ${{ secrets.NEON_API_KEY }} # You can generate an API key in your account settings
   NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }} # You can find this in your project settings
   NEON_USERNAME: ${{ vars.NEON_USERNAME}} # The database role
-
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN}} # You can generate a token from the access tokens section in your Expo account settings
 jobs:
   deploy-preview:
     permissions: write-all
@@ -28,19 +28,13 @@ jobs:
         with:
           project_id: ${{ env.NEON_PROJECT_ID }}
           # parent: dev # optional (defaults to your primary branch)
-          branch_name: preview/pr-${{ github.event.number }}-${{ steps.branch-name.outputs.current_branch }}
+          branch_name: preview/pr-${{ github.event.number }}-${{ github.event.pull_request.head.ref }}
           username: ${{ env.NEON_USERNAME }}
           database: dg_db # database to branch
           api_key: ${{ env.NEON_API_KEY }}
 
-      - run: echo branch_id ${{ steps.create-branch.outputs.branch_id }}
-      - run: echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> $GITHUB_ENV
-      - run: echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> $GITHUB_ENV
       - run: echo "EXPO_PUBLIC_NEON_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require" >> $GITHUB_ENV
-
-      # - name: 🏗 Setup repo
-      #   uses: actions/checkout@v3
-
+      
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
@@ -51,7 +45,7 @@ jobs:
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
+          token: ${{ env.EXPO_TOKEN }}
 
       - name: 📦 Install dependencies
         run: npm install
