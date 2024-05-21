@@ -33,14 +33,6 @@ jobs:
           database: dg_db # database to branch
           api_key: ${{ env.NEON_API_KEY }}
 
-      - run: echo branch_id ${{ steps.create-branch.outputs.branch_id }}
-      - run: echo DATABASE_URL=${{ steps.create-branch.outputs.db_url_with_pooler }}?sslmode=require >> $GITHUB_ENV
-      - run: echo DIRECT_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require >> $GITHUB_ENV
-      - run: echo "EXPO_PUBLIC_NEON_URL=${{ steps.create-branch.outputs.db_url }}?sslmode=require" >> $GITHUB_ENV
-
-      # - name: 🏗 Setup repo
-      #   uses: actions/checkout@v3
-
       - name: 🏗 Setup Node
         uses: actions/setup-node@v3
         with:
