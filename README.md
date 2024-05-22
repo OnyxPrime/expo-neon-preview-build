@@ -37,6 +37,10 @@ To test it all out, perform the following steps:
 3. Commit your changes and push the branch to your repository.
 4. Create a pull request for your development branch into main.
 5. Once the GitHub Action completes, open the preview build on your mobile device using the QR code in the comments of the Pull Request. You should an image like below.
+
+![Elements Application in Google Chrome](/images/elements-app.png)
+
+
 6. Go back to the SQL Editor in the Neon console and run the following SQL statement against the database branch for your PR. It should be named something like this `preview/pr-4-development_branch_name`.
 
 ```SQL
