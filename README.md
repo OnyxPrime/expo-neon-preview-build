@@ -38,7 +38,7 @@ To test it all out, perform the following steps:
 4. Create a pull request for your development branch into main.
 5. Once the GitHub Action completes, open the preview build on your mobile device using the QR code in the comments of the Pull Request. You should an image like below.
 
-![React Native Expo application with text greetings Ryan](/images/initial_preview.jpeg)
+![<img src="/images/initial_preview.jpeg" height="250" alt="React Native Expo application with text greetings Ryan"/>](/images/initial_preview.jpeg)
 
 
 6. Go back to the SQL Editor in the Neon console and run the following SQL statement against the database branch for your PR. It should be named something like this `preview/pr-4-development_branch_name`.
