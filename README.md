@@ -1,50 +1,52 @@
-# Welcome to your Expo app 👋
+# React Native Expo and Neon's Serverless Postgres Platform
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This repository provides an example of how to use GitHub Actions to generate a preview build for a React Native Expo application. It also demonstrates how to create a corresponding Neon database branch.
 
-## Get started
 
-1. Install dependencies
+## Prerequisites
 
-   ```bash
-   npm install
-   ```
+Before we begin, you will need to have a few things already setup.
 
-2. Start the app
+- An [Expo account](https://expo.dev/signup) for deploying and testing preview branches.
+- A [Neon account](https://console.neon.tech/signup) with with a database project for branching.
+- A clone of this repository,
 
-   ```bash
-    npx expo start
-   ```
+## Setting up GitHub
 
-In the output, you'll find options to open the app in a
+On your GitHub repository page, navigate to `Settings` → `Secrets and variables` → `Actions` and add the following secrets and variables.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **Neon API Key:**  Obtain a Neon API key from the `API Keys`  by clicking on your avatar in the upper right corner, then `Account Settings` → `API Keys`. Once you have created your API key, add it to your GitHub projects `Repository Secrets` with the name `NEON_API_KEY`.
+- **Neon Project ID:** The Neon Project ID can be obtained from your Neon project’s `Settings` → `General` page. Add the Neon Project ID to your GitHub projects `Repository Variables` under then name `NEON_PROJECT_ID`.
+- **Neon Database Username:** Add the DB Role to be used for branch creation to your GitHub projects `Repository Variables` under then name `NEON_USERNAME`.
+- **Expo Token:** Obtain an Expo access token by going to `Account Settings` → `Access tokens`. Then add a `Robot user` by clicking on `Add robot` and giving it the name `GITHUB_ACTIONS`. Next, click on `Create token` and give it a descriptive, meaningful name, something like `GitHub actions token for PR builds`. Finally, copy the token and add it to your GitHub projects `Repository Secrets` with the name `EXPO_TOKEN`.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Setting up your database
 
-## Get a fresh project
+Go to the SQL Editor for your database project in the [Neon Console](https://console.neon.tech/app/projects/) and run the SQL statements below.
 
-When you're ready, run:
-
-```bash
-npm run reset-project
+```SQL
+CREATE TABLE neon_app_content(id SERIAL PRIMARY KEY, text_field TEXT NOT NULL, value TEXT);
+INSERT INTO neon_app_content(text_field, value) VALUES ('name', 'Ryan')
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Testing it out
 
-## Learn more
+To test it all out, perform the following steps:
+1. Create a development branch.
+2. Change the word `Welcome` on line 37 of the ./app/(tabs)/index.tsx file to `Greetings`.
+3. Commit your changes and push the branch to your repository.
+4. Create a pull request for your development branch into main.
+5. Once the GitHub Action completes, open the preview build on your mobile device using the QR code in the comments of the Pull Request. You should an image like below.
 
-To learn more about developing your project with Expo, look at the following resources:
+![<img src="./images/initial_preview.jpeg" height="350" alt="React Native Expo application with text greetings Ryan"/>](./images/initial_preview.jpeg)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/learn): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+6. Go back to the SQL Editor in the Neon console and run the following SQL statement against the database branch for your PR. It should be named something like this `preview/pr-4-development_branch_name`.
 
-## Join the community
+```SQL
+UPDATE neon_app_content
+SET value='Program'
+WHERE text_field = 'name'
+```
+7. Reload the app on your mobile device by using a 3-finger press on the app, and selecting `Reload`. You should now see the name changed from `Ryan` to `Program`.
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+![<img src="./images/updated_preview.jpeg" height="350" alt="React Native Expo application with text greetings program"/>](./images/updated_preview.jpeg)
