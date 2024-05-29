@@ -9,7 +9,7 @@ Before we begin, you will need to have a few things already setup.
 
 - An [Expo account](https://expo.dev/signup) for deploying and testing preview branches.
 - A [Neon account](https://console.neon.tech/signup) with with a database project for branching.
-- A clone of this repository,
+- A [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) of this repository.
 
 ## Setting up GitHub
 
